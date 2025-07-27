@@ -1,46 +1,197 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Maison des Revivalistes - Salle de Prière</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Maison des Revivalistes - Accueil</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  :root {
+    --yellow: #FFD600;
+    --black: #121212;
+    --dark-gray: #1C1C1C;
+    --white: #f5f5f5;
+    --shadow-yellow: rgba(255, 214, 0, 0.6);
+  }
+
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    background-color: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 1.5rem;
+    text-align: center;
+    background: var(--dark-gray);
+    box-shadow: 0 2px 8px var(--shadow-yellow);
+    font-weight: 600;
+    font-size: 1.8rem;
+    letter-spacing: 1.2px;
+    user-select: none;
+  }
+
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 1.5rem;
+    padding: 2rem 1.5rem;
+    max-width: 960px;
+    margin: 0 auto 3rem;
+  }
+
+  .card {
+    background: var(--dark-gray);
+    border-radius: 20px;
+    box-shadow: 0 0 12px var(--shadow-yellow);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    cursor: pointer;
+    color: var(--yellow);
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-align: center;
+    transition:
+      box-shadow 0.3s ease,
+      transform 0.25s ease,
+      background-color 0.3s ease;
+    position: relative;
+    user-select: none;
+  }
+
+  .card:hover, .card:focus {
+    box-shadow: 0 0 25px var(--yellow);
+    background-color: #292900;
+    transform: scale(1.06);
+    outline: none;
+  }
+
+  .card span {
+    margin-top: 0.8rem;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--white);
+  }
+
+  .card.disabled {
+    color: #777;
+    cursor: not-allowed;
+  }
+
+  .card.disabled:hover {
+    box-shadow: none;
+    background-color: var(--dark-gray);
+    transform: none;
+  }
+
+  /* Petit badge "À venir" */
+  .coming-soon {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: var(--yellow);
+    color: var(--black);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 12px;
+    user-select: none;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1rem;
+    color: #bbb;
+    font-size: 0.85rem;
+    user-select: none;
+  }
+
+  @media (max-width: 480px) {
+    main {
+      padding: 1rem;
+      gap: 1rem;
+    }
+    .card {
+      padding: 1.5rem 1rem;
+      font-size: 1.2rem;
+    }
+  }
+</style>
 </head>
 <body>
   <header>
-    <h1>Maison des Revivalistes</h1>
-    <p class="verse">"Car là où deux ou trois sont assemblés en mon nom, je suis au milieu d'eux." - Matthieu 18:20</p>
+    Bienvenue au Ministère de Prière<br/>Maison des Revivalistes
   </header>
 
-  <main>
-    <!-- SECTION CONNEXION -->
-    <section id="join-section">
-      <input id="name" type="text" placeholder="Votre Nom et Prénom" autocomplete="off" />
-      <input id="room" type="text" placeholder="Nom de la Chambre" autocomplete="off" />
-      <button id="join">Rejoindre la Prière</button>
-    </section>
+  <main role="main" aria-label="Menu principal">
 
-    <!-- SALLE DE PRIÈRE -->
-    <section id="prayer-room" style="display:none;">
-      <!-- Participants -->
-      <aside id="participants-list">
-        <h2>Participants</h2>
-      </aside>
+    <div tabindex="0" role="button" class="card" id="join-call" aria-label="Rejoindre l'appel de prière">
+      📞 Appel de Prière
+      <span>Rejoignez la salle de prière audio</span>
+    </div>
 
-      <!-- Zone Audio -->
-      <section id="audio-zone">
-        <!-- Audios dynamiques ici -->
-      </section>
+    <div tabindex="0" role="button" class="card disabled" aria-label="Quiz biblique à venir">
+      📚 Quiz Biblique
+      <span class="coming-soon">À venir</span>
+    </div>
 
-      <!-- Chat -->
-      <section id="chat-container">
-        <div id="chat-messages"></div>
-        <input id="chat-input" type="text" placeholder="Écrire un message..." />
-      </section>
-    </section>
+    <div tabindex="0" role="button" class="card disabled" aria-label="Podcast MDP à venir">
+      🎧 MDP en Podcast
+      <span class="coming-soon">À venir</span>
+    </div>
+
+    <div tabindex="0" role="button" class="card" id="cahier-priere" aria-label="Ouvrir le cahier de prière">
+      📒 Cahier de Prière
+      <span>Notez vos prières personnelles</span>
+    </div>
+
   </main>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
+  <footer>
+    &copy; 2025 Maison des Revivalistes
+  </footer>
+
+  <script>
+    document.getElementById('join-call').addEventListener('click', () => {
+      window.location.href = 'priere.html';
+    });
+    document.getElementById('join-call').addEventListener('keypress', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        window.location.href = 'priere.html';
+      }
+    });
+
+    document.getElementById('cahier-priere').addEventListener('click', () => {
+      window.location.href = 'cahier.html';
+    });
+    document.getElementById('cahier-priere').addEventListener('keypress', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        window.location.href = 'cahier.html';
+      }
+    });
+
+    // Les deux autres boutons sont désactivés (à venir), donc on peut aussi leur ajouter un petit alert au clic si tu veux
+    const disabledCards = document.querySelectorAll('.card.disabled');
+    disabledCards.forEach(card => {
+      card.addEventListener('click', () => alert('Fonctionnalité à venir bientôt !'));
+      card.addEventListener('keypress', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          alert('Fonctionnalité à venir bientôt !');
+        }
+      });
+    });
+  </script>
 </body>
 </html>

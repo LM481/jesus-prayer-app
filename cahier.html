@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cahier de Prière Pro++ - Maison des Revivalistes</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  :root {
+    --yellow: #FFD600;
+    --black: #121212;
+    --dark-gray: #1C1C1C;
+    --white: #f5f5f5;
+    --shadow-yellow: rgba(255, 214, 0, 0.6);
+    --green: #00cc66;
+    --red: #ff4444;
+
+    --transition: 0.25s ease;
+  }
+
+  body {
+    background-color: var(--black);
+    color: var(--white);
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+    transition: background-color var(--transition), color var(--transition);
+  }
+
+  body.light {
+    background-color: #fefefe;
+    color: #222;
+  }
+
+  header {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.9rem;
+    padding: 1rem 0 1.5rem;
+    border-bottom: 2px solid var(--yellow);
+    user-select: none;
+  }
+
+  main {
+    flex: 1;
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  input[type="text"],
+  input[type="search"] {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    background-color: var(--dark-gray);
+    color: var(--white);
+    box-shadow: inset 0 0 6px #0008;
+    transition: box-shadow 0.3s ease;
+    min-width: 150px;
+  }
+
+  body.light input[type="text"],
+  body.light input[type="search"] {
+    background-color: #ddd;
+    color: #222;
+  }
+
+  input[type="text"]:focus,
+  input[type="search"]:focus {
+    box-shadow: 0 0 10px var(--yellow);
+  }
+
+  button {
+    background-color: var(--yellow);
+    border: none;
+    border-radius: 12px;
+    padding: 0 1.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--black);
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--shadow-yellow);
+    transition: background-color 0.3s ease;
+    user-select: none;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  button:hover,
+  button:focus {
+    background-color: #e6cc00;
+    outline: none;
+  }
+
+  #stats {
+    color: var(--yellow);
+    font-weight: 600;
+    user-select: none;
+    font-size: 1rem;
+    text-align: right;
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+
+  li {
+    background-color: var(--dark-gray);
+    padding: 1rem 1.2rem;
+    border-radius: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 8px var(--shadow-yellow);
+    font-size: 1rem;
+    word-break: break-word;
+    user-select: text;
+    cursor: pointer;
+    transition:
+      background-color var(--transition),
+      box-shadow var(--transition),
+      transform var(--transition);
+  }
+
+  li[contenteditable="true"] {
+    outline: 2px solid var(--yellow);
+    cursor: text;
+    background-color: #333333cc;
+  }
+
+  li.completed {
+    text-decoration: line-through;
+    color: #888888;
+    background-color: #222222cc;
+  }
+
+  li:hover:not([contenteditable="true"]) {
+    background-color: #292900cc;
+    transform: translateX(5px);
+  }
+
+  .buttons {
+    display: flex;
+    gap: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  button.delete-btn,
+  button.check-btn {
+    background: none;
+    border: none;
+    font-weight: 700;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 0 0.4rem;
+    line-height: 1;
+    user-select: none;
+    transition: color var(--transition);
+  }
+
+  button.delete-btn {
+    color: var(--red);
+  }
+
+  button.delete-btn:hover,
+  button.delete-btn:focus {
+    color: #ff2222;
+    outline: none;
+  }
+
+  button.check-btn {
+    color: var(--green);
+  }
+
+  button.check-btn:hover,
+  button.check-btn:focus {
+    color: #00aa44;
+    outline: none;
+  }
+
+  /* Scrollbar style */
+  ul::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ul::-webkit-scrollbar-thumb {
+    background-color: var(--yellow);
+    border-radius: 8px;
+  }
+
+  footer {
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 1rem 0 0.5rem;
+    color: #bbb;
+    user-select: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    body {
+      padding: 1rem;
+    }
+    main {
+      max-width: 100%;
+    }
+    li {
+      font-size: 0.95rem;
+    }
+    button {
+      padding: 0 1.2rem;
+      font-size: 1rem;
+      height: 36px;
+    }
+  }
+
+  /* Drag & Drop */
+  .dragging {
+    opacity: 0.5;
+    transform: scale(0.98);
+  }
+
+  /* Mode plein écran bouton */
+  #fullscreen-btn {
+    margin-left: 0.5rem;
+    padding: 0 0.8rem;
+  }
+
+  /* Mode clair */
+  #mode-toggle {
+    background-color: var(--dark-gray);
+    color: var(--yellow);
+  }
+  body.light #mode-toggle {
+    background-color: var(--yellow);
+    color: var(--black);
+  }
+</style>
+</head>
+<body>
+<header>
+  Mon Cahier de Prière Pro++
+  <button id="mode-toggle" aria-label="Changer thème clair/sombre" title="Changer thème" type="button">🌓</button>
+  <button id="fullscreen-btn" aria-label="Activer mode plein écran" title="Plein écran" type="button">⛶</button>
+</header>
+
+<main>
+  <form id="prayer-form" aria-label="Ajouter une nouvelle prière">
+    <input type="text" id="prayer-input" placeholder="Écris ta prière ici..." aria-required="true" autocomplete="off" />
+    <button type="submit" aria-label="Ajouter la prière">+</button>
+  </form>
+
+  <input type="search" id="search-input" placeholder="Rechercher dans les prières..." aria-label="Recherche dans les prières" />
+
+  <div id="stats" aria-live="polite" aria-atomic="true">
+    0 prières actives / 0 au total
+  </div>
+
+  <ul id="prayers-list" aria-live="polite" aria-relevant="additions removals" aria-label="Liste des prières" tabindex="0">
+    <!-- Prières dynamiques ici -->
+  </ul>
+
+  <div style="display:flex; justify-content:flex-end; gap: 1rem; margin-top:1rem;">
+    <button id="clear-all" aria-label="Tout effacer">Tout effacer</button>
+    <button id="export-btn" aria-label="Exporter les prières">Exporter</button>
+    <label for="import-file" style="cursor:pointer; background-color: var(--yellow); color: var(--black); padding: 0 1rem; border-radius:12px; font-weight:700; user-select:none; display:inline-block;">
+      Importer
+    </label>
+    <input type="file" id="import-file" accept=".json" style="display:none;" aria-label="Importer les prières depuis fichier JSON" />
+  </div>
+</main>
+
+<footer>
+  &copy; 2025 Maison des Revivalistes
+</footer>
+
+<script>
+  const form = document.getElementById('prayer-form');
+  const input = document.getElementById('prayer-input');
+  const prayersList = document.getElementById('prayers-list');
+  const searchInput = document.getElementById('search-input');
+  const stats = document.getElementById('stats');
+  const clearAllBtn = document.getElementById('clear-all');
+  const exportBtn = document.getElementById('export-btn');
+  const importFile = document.getElementById('import-file');
+  const modeToggle = document.getElementById('mode-toggle');
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+  let editingLi = null;
+  let originalText = '';
+  let dragSrcEl = null;
+
+  // Charge prières de localStorage
+  function loadPrayers() {
+    const saved = localStorage.getItem('prayers');
+    return saved ? JSON.parse(saved) : [];
+  }
+  // Sauvegarde prières dans localStorage
+  function savePrayers(prayers) {
+    localStorage.setItem('prayers', JSON.stringify(prayers));
+  }
+
+  // Met à jour le compteur
+  function updateStats(prayers) {
+    const active = prayers.filter(p => !p.completed).length;
+    stats.textContent = `${active} prière${active > 1 ? 's' : ''} active${active > 1 ? 's' : ''} / ${prayers.length} au total`;
+  }
+
+  // Affiche prières dans la liste, avec filtrage optionnel
+  function displayPrayers(filter = '') {
+    prayersList.innerHTML = '';
+    let prayers = loadPrayers();
+
+    if (filter) {
+      const f = filter.toLowerCase();
+      prayers = prayers.filter(p => p.text.toLowerCase().includes(f));
+    }
+
+    if (prayers.length === 0) {
+      const emptyLi = document.createElement('li');
+      emptyLi.textContent = filter ? "Aucune prière trouvée." : "Aucune prière ajoutée pour l'instant.";
+      emptyLi.style.fontStyle = 'italic';
+      emptyLi.style.color = '#bbb';
+      prayersList.appendChild(emptyLi);
+      updateStats([]);
+      return;
+    }
+
+    prayers.forEach((p, idx) => {
+      const li = document.createElement('li');
+      li.setAttribute('tabindex', '0');
+      li.draggable = true;
+      li.textContent = p.text;
+      if (p.completed) li.classList.add('completed');
+
+      // Toggle completion button
+      const btns = document.createElement('div');
+      btns.classList.add('buttons');
+
+      const checkBtn = document.createElement('button');
+      checkBtn.classList.add('check-btn');
+      checkBtn.setAttribute('aria-label', p.completed ? 'Marquer comme non exaucée' : 'Marquer comme exaucée');
+      checkBtn.innerHTML = p.completed ? '✔️' : '⭕';
+      checkBtn.title = p.completed ? 'Prière exaucée' : 'Prière non exaucée';
+      checkBtn.onclick = () => {
+        prayers[idx].completed = !prayers[idx].completed;
+        savePrayers(prayers);
+        displayPrayers(searchInput.value);
+      };
+
+      // Delete button with confirmation
+      const delBtn = document.createElement('button');
+      delBtn.classList.add('delete-btn');
+      delBtn.setAttribute('aria-label', `Supprimer la prière numéro ${idx + 1}`);
+      delBtn.textContent = '×';
+      delBtn.onclick = () => {
+        if (confirm('Es-tu sûr de vouloir supprimer cette prière ?')) {
+          prayers.splice(idx, 1);
+          savePrayers(prayers);
+          displayPrayers(searchInput.value);
+        }
+      };
+
+      // Click to edit with confirmation on abandon
+      li.addEventListener('click', () => {
+        if (editingLi) return;
+        editingLi = li;
+        originalText = li.textContent;
+        li.contentEditable = "true";
+        li.focus();
+        document.execCommand('selectAll', false, null);
+        document.getSelection().collapseToEnd();
+      });
+
+      li.addEventListener('blur', () => {
+        if (!li.isContentEditable) return;
+        const newText = li.textContent.trim();
+        if (newText === '') {
+          alert('La prière ne peut pas être vide.');
+          li.textContent = originalText;
+        } else {
+          prayers[idx].text = newText;
+          savePrayers(prayers);
+        }
+        li.contentEditable = "false";
+        editingLi = null;
+        displayPrayers(searchInput.value);
+      });
+
+      li.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          li.blur();
+        }
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          li.textContent = originalText;
+          li.contentEditable = "false";
+          editingLi = null;
+        }
+      });
+
+      // Drag & Drop handlers
+      li.addEventListener('dragstart', e => {
+        dragSrcEl = li;
+        e.dataTransfer.effectAllowed = 'move';
+        li.classList.add('dragging');
+      });
+
+      li.addEventListener('dragend', e => {
+        li.classList.remove('dragging');
+      });
+
+      li.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+
+      li.addEventListener('drop', e => {
+        e.preventDefault();
+        if (dragSrcEl === li) return;
+        const prayers = loadPrayers();
+        const fromIndex = Array.from(prayersList.children).indexOf(dragSrcEl);
+        const toIndex = Array.from(prayersList.children).indexOf(li);
+
+        // Rearrange array
+        const movedItem = prayers.splice(fromIndex, 1)[0];
+        prayers.splice(toIndex, 0, movedItem);
+
+        savePrayers(prayers);
+        displayPrayers(searchInput.value);
+      });
+
+      btns.appendChild(checkBtn);
+      btns.appendChild(delBtn);
+      li.appendChild(btns);
+      prayersList.appendChild(li);
+    });
+
+    updateStats(prayers);
+  }
+
+  // Ajouter prière
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const val = input.value.trim();
+    if (!val) return alert('Écris ta prière avant d\'ajouter.');
+    const prayers = loadPrayers();
+    prayers.unshift({ text: val, completed: false });
+    savePrayers(prayers);
+    displayPrayers(searchInput.value);
+    input.value = '';
+    input.focus();
+  });
+
+  // Recherche en temps réel
+  searchInput.addEventListener('input', e => {
+    displayPrayers(e.target.value);
+  });
+
+  // Tout effacer
+  clearAllBtn.onclick = () => {
+    if (confirm('Tu es sûr de vouloir tout effacer ? Cette action est irréversible.')) {
+      localStorage.removeItem('prayers');
+      displayPrayers();
+      searchInput.value = '';
+    }
+  };
+
+  // Export JSON
+  exportBtn.onclick = () => {
+    const prayers = loadPrayers();
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(prayers, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", "cahier_prieres.json");
+    document.body.appendChild(dlAnchorElem);
+    dlAnchorElem.click();
+    dlAnchorElem.remove();
+  };
+
+  // Import JSON
+  importFile.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = event => {
+      try {
+        const importedPrayers = JSON.parse(event.target.result);
+        if (!Array.isArray(importedPrayers)) throw new Error("Format invalide");
+        // Validate array items
+        if (importedPrayers.some(p => typeof p.text !== 'string' || typeof p.completed !== 'boolean')) {
+          throw new Error("Format invalide");
+        }
+        if (confirm(`Importer ${importedPrayers.length} prières ? Les prières existantes seront remplacées.`)) {
+          savePrayers(importedPrayers);
+          displayPrayers();
+          searchInput.value = '';
+        }
+      } catch (error) {
+        alert("Fichier JSON invalide ou corrompu.");
+      }
+      importFile.value = ''; // reset input
+    };
+    reader.readAsText(file);
+  });
+
+  // Mode clair/sombre toggle
+  modeToggle.onclick = () => {
+    document.body.classList.toggle('light');
+  };
+
+  // Mode plein écran toggle
+  fullscreenBtn.onclick = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {
+        alert("Échec du passage en plein écran");
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  // Init affichage
+  displayPrayers();
+</script>
+</body>
+</html>
