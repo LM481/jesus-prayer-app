@@ -18,23 +18,21 @@
     }
 
     header {
-      background-color: #000000;
-      padding: 15px 20px;
+      background-color: #000;
+      padding: 12px 10px;
       text-align: center;
       font-weight: 600;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       color: #FFD600;
       user-select: none;
       box-shadow: 0 2px 5px rgba(255, 214, 0, 0.6);
       flex-shrink: 0;
     }
-
     #verse {
       font-style: italic;
-      font-weight: 400;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #fff9c4;
-      margin-top: 3px;
+      margin-top: 2px;
       user-select: none;
     }
 
@@ -43,262 +41,179 @@
       display: flex;
       overflow: hidden;
       height: 100%;
+      padding: 8px;
+      box-sizing: border-box;
     }
 
     /* Section connexion */
     #join-section {
       margin: auto;
       background-color: #1c1c1c;
-      padding: 35px 45px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px #FFD600aa;
-      width: 350px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #FFD600aa;
+      width: 95%;
+      max-width: 320px;
       text-align: center;
     }
     #join-section input {
       width: 100%;
-      padding: 12px 15px;
-      margin: 15px 0;
+      padding: 10px 12px;
+      margin: 10px 0;
       border-radius: 8px;
       border: none;
-      font-size: 1rem;
+      font-size: 0.95rem;
       background: #2a2a2a;
       color: white;
       outline: none;
-      transition: box-shadow 0.3s ease;
-    }
-    #join-section input::placeholder {
-      color: #b8b84f;
-    }
-    #join-section input:focus {
-      box-shadow: 0 0 8px #FFD600;
-      background: #3a3a3a;
     }
     #join-section button {
       background-color: #FFD600;
       border: none;
-      padding: 14px 0;
-      border-radius: 12px;
+      padding: 12px 0;
+      border-radius: 10px;
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: #121212;
       cursor: pointer;
-      margin-top: 20px;
       width: 100%;
-      box-shadow: 0 0 15px #FFD600aa;
-      transition: background-color 0.3s ease;
-    }
-    #join-section button:hover {
-      background-color: #e6cc00;
+      box-shadow: 0 0 10px #FFD600aa;
     }
 
-    /* Container réunion */
+    /* Salle de prière */
     #prayer-room {
       flex: 1;
       display: flex;
-      flex-direction: row;
+      gap: 10px;
       height: 100%;
-      gap: 15px;
-      padding: 15px 10px 10px;
+      padding: 8px 0;
       box-sizing: border-box;
       overflow: hidden;
     }
 
-    /* Liste participants */
     #participants-list {
-      width: 260px;
+      width: 200px;
       background-color: #1c1c1c;
-      border-radius: 15px;
-      box-shadow: 0 0 15px #FFD600aa;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #FFD600aa;
       display: flex;
       flex-direction: column;
-      padding: 15px 12px;
+      padding: 10px;
       overflow-y: auto;
-    }
-    #participants-list h2 {
-      color: #FFD600;
-      font-weight: 700;
-      margin-bottom: 10px;
-      user-select: none;
     }
     .participant {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-      border-radius: 10px;
+      padding: 6px 10px;
+      margin-bottom: 6px;
+      border-radius: 8px;
       background: #292929;
-      color: #fff;
-      font-weight: 500;
-      transition: background-color 0.3s ease;
-    }
-    .participant:hover {
-      background-color: #3f3f00;
-      cursor: default;
-    }
-    .participant .name {
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 0.9rem;
     }
 
-    /* Bouton micro */
-    .mic-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      outline: none;
-      margin-left: 12px;
-      color: #FFD600;
-      font-size: 1.3rem;
-      transition: color 0.3s ease;
-    }
-    .mic-btn.off {
-      color: #555;
-    }
-    .mic-btn:hover {
-      color: #ffff00;
-    }
-
-    /* Zone audio */
     #audio-zone {
-      flex: 1.3;
+      flex: 1.2;
       background-color: #1c1c1c;
-      border-radius: 15px;
-      box-shadow: 0 0 15px #FFD600aa;
-      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #FFD600aa;
+      padding: 8px;
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
+      gap: 8px;
+      justify-content: flex-start;
       overflow-y: auto;
-      min-width: 300px;
       align-content: flex-start;
     }
     audio {
-      width: 180px;
-      border-radius: 20px;
-      border: 2.5px solid #FFD600;
-      outline: none;
-      filter: drop-shadow(0 0 7px #FFD60099);
-      transition: all 0.3s ease;
-    }
-    audio.speaking {
-      border-color: #00ffae;
-      box-shadow:
-        0 0 18px #00ffae,
-        0 0 12px #00ffae inset;
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 18px #00ffae);
+      width: 150px;
+      border-radius: 12px;
+      border: 2px solid #FFD600;
     }
 
-    /* Chat */
     #chat-container {
       flex: 1;
       background-color: #1c1c1c;
-      border-radius: 15px;
-      box-shadow: 0 0 15px #FFD600aa;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #FFD600aa;
       display: flex;
       flex-direction: column;
-      padding: 15px 12px;
-      max-width: 400px;
+      padding: 8px;
+      max-width: 320px;
     }
     #chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding-right: 10px;
-      margin-bottom: 12px;
-      font-size: 15px;
-      color: #fff;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
     }
     .chat-message {
-      max-width: 80%;
-      padding: 10px 15px;
-      margin-bottom: 8px;
-      border-radius: 20px;
-      line-height: 1.3;
-      word-wrap: break-word;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-    .chat-message.you {
-      background-color: #FFD600;
-      color: #121212;
-      margin-left: auto;
-      font-weight: 600;
-      box-shadow: 0 0 10px #FFD600;
-    }
-    .chat-message.other {
-      background-color: #3a3a3a;
-      color: white;
-      margin-right: auto;
+      padding: 8px 10px;
+      margin-bottom: 4px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      line-height: 1.2;
+      background: #292929;
     }
 
+    /* ✅ Champ de chat avec bouton icône */
+    .chat-input-area {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
     #chat-input {
+      flex: 1;
       border-radius: 20px;
       border: none;
-      padding: 12px 16px;
-      font-size: 16px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
       outline: none;
-      background-color: #292929;
+      background: #2a2a2a;
       color: white;
-      box-shadow: inset 0 0 5px #00000099;
-      transition: box-shadow 0.3s ease;
     }
-    #chat-input:focus {
-      box-shadow: inset 0 0 15px #FFD600cc;
+    #send-btn {
+      background: #FFD600;
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 0 6px #FFD600aa;
     }
-
-    /* Scrollbar */
-    #participants-list::-webkit-scrollbar,
-    #chat-messages::-webkit-scrollbar,
-    #audio-zone::-webkit-scrollbar {
-      width: 8px;
-    }
-    #participants-list::-webkit-scrollbar-thumb,
-    #chat-messages::-webkit-scrollbar-thumb,
-    #audio-zone::-webkit-scrollbar-thumb {
-      background-color: #FFD600aa;
-      border-radius: 8px;
+    #send-btn img {
+      width: 18px;
+      height: 18px;
     }
 
-    /* Responsive */
+    /* ✅ Responsive mobile */
     @media (max-width: 900px) {
-      main {
+      main { flex-direction: column; padding: 5px; }
+      #prayer-room {
         flex-direction: column;
+        gap: 8px;
+        overflow-y: auto;
       }
       #participants-list {
         width: 100%;
-        max-height: 130px;
-        display: flex;
+        max-height: 100px;
+        flex-direction: row;
         overflow-x: auto;
-        padding: 12px 6px;
-        border-radius: 12px;
-        box-shadow: 0 0 10px #FFD60099;
-        margin-bottom: 12px;
       }
       .participant {
         flex: 0 0 auto;
-        margin-right: 12px;
-        border-radius: 10px;
-        padding: 8px 14px;
+        margin-right: 6px;
       }
       #audio-zone {
         width: 100%;
-        max-height: 180px;
-        overflow-x: auto;
+        max-height: 150px;
         flex-wrap: nowrap;
-        justify-content: flex-start;
-        margin-bottom: 10px;
-      }
-      audio {
-        width: 150px;
+        overflow-x: auto;
       }
       #chat-container {
         width: 100%;
         max-width: none;
-        height: 300px;
+        height: 220px;
       }
     }
   </style>
@@ -306,24 +221,27 @@
 <body>
   <header>
     Salle de Prière - Maison des Revivalistes
-    <div id="verse">"Car là où deux ou trois sont assemblés en mon nom, je suis au milieu d'eux." - Matthieu 18:20</div>
+    <div id="verse">"Car là où deux ou trois sont assemblés en mon nom..." - Matthieu 18:20</div>
   </header>
 
   <main>
     <section id="join-section">
-      <input id="name" type="text" placeholder="Votre Nom et Prénom" autocomplete="off" required />
-      <input id="room" type="text" placeholder="Nom de la Chambre" autocomplete="off" required />
+      <input id="name" type="text" placeholder="Votre Nom" required />
+      <input id="room" type="text" placeholder="Nom de la Chambre" required />
       <button id="join">Rejoindre</button>
     </section>
 
     <section id="prayer-room" style="display:none;">
-      <aside id="participants-list">
-        <h2>Participants</h2>
-      </aside>
+      <aside id="participants-list"><h2>Participants</h2></aside>
       <section id="audio-zone"></section>
       <section id="chat-container">
         <div id="chat-messages"></div>
-        <input id="chat-input" type="text" placeholder="Écrire un message..." autocomplete="off" />
+        <div class="chat-input-area">
+          <input id="chat-input" type="text" placeholder="Écrire un message..." />
+          <button id="send-btn">
+            <img src="https://cdn-icons-png.flaticon.com/512/724/724715.png" alt="Envoyer">
+          </button>
+        </div>
       </section>
     </section>
   </main>

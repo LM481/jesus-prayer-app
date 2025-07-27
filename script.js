@@ -3,7 +3,6 @@ const socket = io();
 let localStream;
 const peerConnections = {};
 
-// ✅ STUN + TURN (ton VPS OVH)
 const servers = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
@@ -29,7 +28,7 @@ let roomName = '';
 let userName = '';
 let micEnabled = true;
 
-/* ✅ Affiche message chat façon WhatsApp */
+/* ✅ Message chat */
 function addChatMessage(msg, fromYou = false) {
   const div = document.createElement('div');
   div.classList.add('chat-message', fromYou ? 'you' : 'other');
@@ -38,13 +37,13 @@ function addChatMessage(msg, fromYou = false) {
   chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
 }
 
-/* ✅ Met à jour liste des participants */
+/* ✅ Liste participants */
 function updateParticipantsList(participants) {
   participantsList.querySelectorAll('.participant').forEach(el => el.remove());
   participants.forEach(({ id, name, micOn }) => {
     const div = document.createElement('div');
     div.classList.add('participant');
-    div.setAttribute('data-id', id);
+    div.dataset.id = id;
 
     const spanName = document.createElement('span');
     spanName.classList.add('name');
@@ -63,16 +62,16 @@ function updateParticipantsList(participants) {
   });
 }
 
-/* ✅ Active/Désactive le micro local */
+/* ✅ Toggle micro local */
 function toggleMic(userId) {
-  if (userId === socket.id) {
-    micEnabled = !micEnabled;
-    localStream.getAudioTracks().forEach(track => (track.enabled = micEnabled));
-    socket.emit('mic-toggle', { room: roomName, micOn: micEnabled });
-    updateParticipantsLocalMic(micEnabled);
-  } else {
+  if (userId !== socket.id) {
     alert("Tu ne peux pas couper le micro des autres.");
+    return;
   }
+  micEnabled = !micEnabled;
+  localStream.getAudioTracks().forEach(track => (track.enabled = micEnabled));
+  socket.emit('mic-toggle', { room: roomName, micOn: micEnabled });
+  updateParticipantsLocalMic(micEnabled);
 }
 
 function updateParticipantsLocalMic(micOn) {
@@ -86,7 +85,7 @@ function updateParticipantsLocalMic(micOn) {
 
 /* ✅ Indicateur qui bouge quand quelqu'un parle */
 function monitorAudioLevel(stream, audioElem) {
-  const context = new AudioContext();
+  const context = new (window.AudioContext || window.webkitAudioContext)();
   const source = context.createMediaStreamSource(stream);
   const analyser = context.createAnalyser();
   analyser.fftSize = 512;
@@ -94,6 +93,7 @@ function monitorAudioLevel(stream, audioElem) {
   const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
   function checkVolume() {
+    if (context.state === "closed") return;
     analyser.getByteFrequencyData(dataArray);
     const volume = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
     audioElem.classList.toggle('speaking', volume > 30);
@@ -102,7 +102,7 @@ function monitorAudioLevel(stream, audioElem) {
   checkVolume();
 }
 
-/* ✅ Crée une connexion WebRTC */
+/* ✅ WebRTC Peer */
 function createPeerConnection(userId) {
   const pc = new RTCPeerConnection(servers);
 
@@ -142,7 +142,6 @@ joinBtn.onclick = async () => {
 
   try {
     localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    localStream.getAudioTracks().forEach(track => (track.enabled = true));
     micEnabled = true;
 
     joinSection.style.display = 'none';
@@ -163,39 +162,44 @@ joinBtn.onclick = async () => {
   }
 };
 
-/* ✅ Socket events */
-socket.on('update-participants', data => updateParticipantsList(data.participants));
+/* ✅ Sockets */
+socket.on('update-participants', ({ participants }) => updateParticipantsList(participants));
 
-socket.on('user-joined', async data => {
-  const userId = data.id;
-  const pc = createPeerConnection(userId);
-  peerConnections[userId] = pc;
-
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-  socket.emit('offer', { offer, room: roomName, to: userId });
+socket.on('user-joined', async ({ id }) => {
+  try {
+    const pc = createPeerConnection(id);
+    peerConnections[id] = pc;
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    socket.emit('offer', { offer, room: roomName, to: id });
+  } catch (e) {
+    console.error("Erreur user-joined:", e);
+  }
 });
 
-socket.on('offer', async data => {
-  const pc = createPeerConnection(data.from);
-  peerConnections[data.from] = pc;
-
-  await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-  const answer = await pc.createAnswer();
-  await pc.setLocalDescription(answer);
-  socket.emit('answer', { answer, room: roomName, to: data.from });
+socket.on('offer', async ({ from, offer }) => {
+  try {
+    const pc = createPeerConnection(from);
+    peerConnections[from] = pc;
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    socket.emit('answer', { answer, room: roomName, to: from });
+  } catch (e) {
+    console.error("Erreur offer:", e);
+  }
 });
 
-socket.on('answer', async data => {
-  const pc = peerConnections[data.from];
-  if (pc) await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+socket.on('answer', async ({ from, answer }) => {
+  const pc = peerConnections[from];
+  if (pc) await pc.setRemoteDescription(new RTCSessionDescription(answer));
 });
 
-socket.on('ice-candidate', async data => {
-  const pc = peerConnections[data.from];
-  if (pc && data.candidate) {
+socket.on('ice-candidate', async ({ from, candidate }) => {
+  const pc = peerConnections[from];
+  if (pc && candidate) {
     try {
-      await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+      await pc.addIceCandidate(new RTCIceCandidate(candidate));
     } catch (e) {
       console.error("Erreur ICE:", e);
     }
@@ -221,14 +225,13 @@ chatInput.addEventListener('keypress', e => {
   }
 });
 
-socket.on('chat-message', data => {
-  if (data.name !== userName) {
-    addChatMessage(`${data.name} : ${data.message}`);
+socket.on('chat-message', ({ name, message }) => {
+  if (name !== userName) {
+    addChatMessage(`${name} : ${message}`);
   }
 });
 
-socket.on('mic-status-changed', data => {
-  const { userId, micOn } = data;
+socket.on('mic-status-changed', ({ userId, micOn }) => {
   const partDiv = participantsList.querySelector(`.participant[data-id="${userId}"]`);
   if (!partDiv) return;
   const btn = partDiv.querySelector('.mic-btn');
