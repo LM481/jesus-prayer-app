@@ -239,3 +239,22 @@ socket.on('mic-status-changed', ({ userId, micOn }) => {
   btn.title = micOn ? "Micro activé" : "Micro désactivé";
   btn.classList.toggle('off', !micOn);
 });
+function sendMessage() {
+      if (chatInput.value.trim()) {
+        const message = chatInput.value.trim();
+        addChatMessage("Moi : " + message, true);
+        socket.emit("chat-message", { message, name: userName });
+        chatInput.value = "";
+      }
+    }
+
+    sendBtn.onclick = sendMessage;
+    chatInput.addEventListener("keypress", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    socket.on("chat-message", data => {
+      if (data.name !== userName) {
+        addChatMessage(data.name + " : " + data.message);
+      }
+    });
