@@ -1,6 +1,7 @@
 const socket = io();
 
 let localStream;
+const peerConnections = {};
 const servers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
 const audiosDiv = document.getElementById('audio-zone');
@@ -17,17 +18,17 @@ let roomName = '';
 let userName = '';
 let micEnabled = true;
 
-// Affiche message chat
+/* ✅ Affiche message chat façon WhatsApp */
 function addChatMessage(msg, fromYou = false) {
-  const p = document.createElement('div');
-  p.classList.add('chat-message');
-  p.classList.add(fromYou ? 'you' : 'other');
-  p.textContent = msg;
-  chatMessages.appendChild(p);
+  const div = document.createElement('div');
+  div.classList.add('chat-message');
+  div.classList.add(fromYou ? 'you' : 'other');
+  div.textContent = msg;
+  chatMessages.appendChild(div);
   chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
 }
 
-// Met à jour la liste des participants (array d'objets {id, name, micOn})
+/* ✅ Met à jour liste des participants */
 function updateParticipantsList(participants) {
   participantsList.querySelectorAll('.participant').forEach(el => el.remove());
   participants.forEach(({ id, name, micOn }) => {
@@ -40,7 +41,6 @@ function updateParticipantsList(participants) {
     spanName.textContent = name;
     div.appendChild(spanName);
 
-    // Bouton micro
     const micBtn = document.createElement('button');
     micBtn.classList.add('mic-btn');
     micBtn.title = micOn ? "Micro activé" : "Micro désactivé";
@@ -53,7 +53,7 @@ function updateParticipantsList(participants) {
   });
 }
 
-// Toggle micro local et informe les autres
+/* ✅ Active/Désactive le micro local */
 function toggleMic(userId) {
   if (userId === socket.id) {
     micEnabled = !micEnabled;
@@ -61,12 +61,10 @@ function toggleMic(userId) {
     socket.emit('mic-toggle', { room: roomName, micOn: micEnabled });
     updateParticipantsLocalMic(micEnabled);
   } else {
-    // Ne peut pas controler micro des autres (sécurité)
-    alert("Vous ne pouvez pas changer le micro des autres.");
+    alert("Tu ne peux pas couper le micro des autres.");
   }
 }
 
-// Mise à jour visuelle locale du micro dans la liste
 function updateParticipantsLocalMic(micOn) {
   const localDiv = participantsList.querySelector(`.participant[data-id="${socket.id}"]`);
   if (!localDiv) return;
@@ -76,7 +74,7 @@ function updateParticipantsLocalMic(micOn) {
   btn.classList.toggle('off', !micOn);
 }
 
-// Surveillance du volume audio local pour effet "speaking"
+/* ✅ Indicateur qui bouge quand quelqu'un parle */
 function monitorAudioLevel(stream, audioElem) {
   const context = new AudioContext();
   const source = context.createMediaStreamSource(stream);
@@ -88,23 +86,17 @@ function monitorAudioLevel(stream, audioElem) {
   function checkVolume() {
     analyser.getByteFrequencyData(dataArray);
     const volume = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-    if (volume > 30) {
-      audioElem.classList.add('speaking');
-    } else {
-      audioElem.classList.remove('speaking');
-    }
+    audioElem.classList.toggle('speaking', volume > 30);
     requestAnimationFrame(checkVolume);
   }
   checkVolume();
 }
 
-// Création PeerConnection
+/* ✅ Crée une connexion WebRTC */
 function createPeerConnection(userId) {
   const pc = new RTCPeerConnection(servers);
 
-  localStream.getTracks().forEach(track => {
-    pc.addTrack(track, localStream);
-  });
+  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
   pc.onicecandidate = (event) => {
     if (event.candidate) {
@@ -127,27 +119,25 @@ function createPeerConnection(userId) {
   return pc;
 }
 
-// Rejoindre la salle
+/* ✅ Rejoindre la salle */
 joinBtn.onclick = async () => {
   roomName = roomInput.value.trim();
   userName = nameInput.value.trim();
   if (!roomName || !userName) {
-    alert("Veuillez entrer votre nom et le nom de la chambre");
+    alert("Veuillez entrer votre nom et le nom de la chambre.");
     return;
   }
 
   joinBtn.disabled = true;
 
   try {
-    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     localStream.getAudioTracks().forEach(track => track.enabled = true);
     micEnabled = true;
 
-    // Affichage UI réunion
     joinSection.style.display = 'none';
     prayerRoom.style.display = 'flex';
 
-    // Audio local muet (muted true pour pas qu'on s'entende)
     const localAudio = document.createElement('audio');
     localAudio.id = 'audio-local';
     localAudio.autoplay = true;
@@ -159,13 +149,12 @@ joinBtn.onclick = async () => {
     socket.emit('join-room', { room: roomName, name: userName, micOn: micEnabled });
 
   } catch (err) {
-    alert("Erreur accès micro: " + err.message);
+    alert("Erreur accès micro : " + err.message);
     joinBtn.disabled = false;
   }
 };
 
-const peerConnections = {};
-
+/* ✅ Socket events */
 socket.on('update-participants', data => {
   updateParticipantsList(data.participants);
 });
@@ -192,9 +181,7 @@ socket.on('offer', async data => {
 
 socket.on('answer', async data => {
   const pc = peerConnections[data.from];
-  if (pc) {
-    await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-  }
+  if (pc) await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
 });
 
 socket.on('ice-candidate', async data => {
@@ -217,7 +204,7 @@ socket.on('user-left', userId => {
   if (audioElem) audioElem.remove();
 });
 
-// Reception chat
+/* ✅ Chat */
 chatInput.addEventListener('keypress', e => {
   if (e.key === 'Enter' && chatInput.value.trim()) {
     const message = chatInput.value.trim();
@@ -233,7 +220,6 @@ socket.on('chat-message', data => {
   }
 });
 
-// Mic toggle reception pour maj participants
 socket.on('mic-status-changed', data => {
   const { userId, micOn } = data;
   const partDiv = participantsList.querySelector(`.participant[data-id="${userId}"]`);
