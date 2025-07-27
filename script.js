@@ -2,7 +2,18 @@ const socket = io();
 
 let localStream;
 const peerConnections = {};
-const servers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+// ✅ STUN + TURN (ton VPS OVH)
+const servers = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    {
+      urls: 'turn:141.94.245.41:3478',
+      username: 'jesus',
+      credential: 'Saintesprit02'
+    }
+  ]
+};
 
 const audiosDiv = document.getElementById('audio-zone');
 const participantsList = document.getElementById('participants-list');
@@ -21,8 +32,7 @@ let micEnabled = true;
 /* ✅ Affiche message chat façon WhatsApp */
 function addChatMessage(msg, fromYou = false) {
   const div = document.createElement('div');
-  div.classList.add('chat-message');
-  div.classList.add(fromYou ? 'you' : 'other');
+  div.classList.add('chat-message', fromYou ? 'you' : 'other');
   div.textContent = msg;
   chatMessages.appendChild(div);
   chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
@@ -57,7 +67,7 @@ function updateParticipantsList(participants) {
 function toggleMic(userId) {
   if (userId === socket.id) {
     micEnabled = !micEnabled;
-    localStream.getAudioTracks().forEach(track => track.enabled = micEnabled);
+    localStream.getAudioTracks().forEach(track => (track.enabled = micEnabled));
     socket.emit('mic-toggle', { room: roomName, micOn: micEnabled });
     updateParticipantsLocalMic(micEnabled);
   } else {
@@ -132,7 +142,7 @@ joinBtn.onclick = async () => {
 
   try {
     localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    localStream.getAudioTracks().forEach(track => track.enabled = true);
+    localStream.getAudioTracks().forEach(track => (track.enabled = true));
     micEnabled = true;
 
     joinSection.style.display = 'none';
@@ -147,7 +157,6 @@ joinBtn.onclick = async () => {
     monitorAudioLevel(localStream, localAudio);
 
     socket.emit('join-room', { room: roomName, name: userName, micOn: micEnabled });
-
   } catch (err) {
     alert("Erreur accès micro : " + err.message);
     joinBtn.disabled = false;
@@ -155,9 +164,7 @@ joinBtn.onclick = async () => {
 };
 
 /* ✅ Socket events */
-socket.on('update-participants', data => {
-  updateParticipantsList(data.participants);
-});
+socket.on('update-participants', data => updateParticipantsList(data.participants));
 
 socket.on('user-joined', async data => {
   const userId = data.id;
