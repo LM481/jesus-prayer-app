@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Salle de Prière - Maison des Revivalistes</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+  /* Variables couleurs */
+  :root {
+    --blue: #0078ff; /* couleur principale WhatsApp bleu */
+    --blue-light: #cce4ff;
+    --blue-dark: #005ec2;
+    --gray-light: #f5f5f5;
+    --gray-medium: #ddd;
+    --gray-dark: #999;
+    --white: #ffffff;
+    --black: #222222;
+  }
+
+  /* Reset et base */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  body {
+    background: var(--gray-light);
+    color: var(--black);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* En-tête */
+  header {
+    background: var(--blue);
+    color: var(--white);
+    text-align: center;
+    padding: 15px 10px;
+    font-weight: 500;
+    font-size: 1.4rem;
+    user-select: none;
+    box-shadow: 0 2px 5px rgba(0,120,255,0.5);
+    position: relative;
+  }
+  #verse {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--blue-light);
+    margin-top: 4px;
+  }
+
+  main {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  /* Section connexion - centrée */
+  #join-section {
+    margin: auto;
+    max-width: 320px;
+    width: 100%;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,120,255,0.3);
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  #join-section input {
+    padding: 12px 14px;
+    border: 1.8px solid var(--gray-medium);
+    border-radius: 20px;
+    font-size: 1rem;
+    outline-offset: 2px;
+    transition: border-color 0.3s ease;
+  }
+  #join-section input:focus {
+    border-color: var(--blue);
+  }
+  #join-section button {
+    background: var(--blue);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 25px;
+    padding: 14px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,120,255,0.4);
+  }
+  #join-section button:hover {
+    background: var(--blue-dark);
+  }
+
+  /* Salle de prière active */
+  #prayer-room {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Liste des participants à gauche */
+  #participants-list {
+    width: 220px;
+    background: var(--white);
+    border-radius: 15px;
+    padding: 15px 10px;
+    box-shadow: 0 0 15px rgba(0,120,255,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  #participants-list h2 {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--blue-dark);
+    font-size: 1.2rem;
+    border-bottom: 1px solid var(--gray-medium);
+    padding-bottom: 5px;
+  }
+  .participant {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    font-weight: 500;
+    font-size: 1rem;
+    border-radius: 20px;
+    user-select: none;
+    transition: background-color 0.2s ease;
+  }
+  .participant:hover {
+    background: var(--blue);
+    color: var(--white);
+  }
+
+  /* Zone audio au centre */
+  #audio-zone {
+    flex: 1.5;
+    background: var(--white);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0,120,255,0.15);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-content: flex-start;
+    overflow-y: auto;
+    justify-content: flex-start;
+  }
+  audio {
+    width: 160px;
+    border-radius: 15px;
+    border: 2px solid var(--blue);
+    outline-offset: 2px;
+    outline-color: var(--blue-light);
+  }
+
+  /* Chat à droite */
+  #chat-container {
+    flex: 1.1;
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0,120,255,0.25);
+    display: flex;
+    flex-direction: column;
+    padding: 15px 12px;
+  }
+  #chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    padding-right: 5px;
+    scroll-behavior: smooth;
+  }
+
+  /* Bulles de messages style WhatsApp */
+  .chat-message {
+    max-width: 80%;
+    margin-bottom: 8px;
+    padding: 10px 14px;
+    border-radius: 20px;
+    line-height: 1.2;
+    word-wrap: break-word;
+  }
+  .chat-message.self {
+    background: var(--blue);
+    color: var(--white);
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-message.other {
+    background: var(--gray-medium);
+    color: var(--black);
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+  }
+
+  /* Zone input chat */
+  .chat-input-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  #chat-input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1.5px solid var(--gray-medium);
+    font-size: 1rem;
+    outline-offset: 2px;
+    outline-color: transparent;
+    transition: outline-color 0.3s ease;
+  }
+  #chat-input:focus {
+    outline-color: var(--blue);
+  }
+  #send-btn {
+    background: var(--blue);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,120,255,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #send-btn svg {
+    fill: white;
+    width: 22px;
+    height: 22px;
+    transform: rotate(45deg);
+  }
+
+  /* Scrollbar custom simple */
+  #participants-list::-webkit-scrollbar,
+  #audio-zone::-webkit-scrollbar,
+  #chat-messages::-webkit-scrollbar {
+    width: 8px;
+  }
+  #participants-list::-webkit-scrollbar-thumb,
+  #audio-zone::-webkit-scrollbar-thumb,
+  #chat-messages::-webkit-scrollbar-thumb {
+    background-color: var(--blue-light);
+    border-radius: 10px;
+  }
+
+  /* Responsive mobile */
+  @media (max-width: 900px) {
+    main {
+      flex-direction: column;
+      padding: 10px 8px;
+    }
+    #prayer-room {
+      flex-direction: column;
+      height: auto;
+    }
+    #participants-list {
+      width: 100%;
+      max-height: 100px;
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 10px 5px;
+    }
+    .participant {
+      flex: 0 0 auto;
+      margin-right: 10px;
+      margin-bottom: 0;
+      border-radius: 14px;
+    }
+    #audio-zone {
+      width: 100%;
+      max-height: 160px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 10px 5px;
+    }
+    audio {
+      width: 120px;
+      border-radius: 14px;
+    }
+    #chat-container {
+      width: 100%;
+      height: 220px;
+      margin-top: 12px;
+      padding: 10px 8px;
+      border-radius: 14px;
+    }
+  }
+</style>
+
+</head>
+<body>
+<header>
+  Salle de Prière - Maison des Revivalistes
+  <div id="verse">"Car là où deux ou trois sont assemblés en mon nom..." - Matthieu 18:20</div>
+</header>
+
+<main>
+  <section id="join-section">
+    <input id="name" type="text" placeholder="Votre Nom" required />
+    <input id="room" type="text" placeholder="Nom de la Chambre" required />
+    <button id="join">Rejoindre</button>
+  </section>
+
+  <section id="prayer-room" style="display:none;">
+    <aside id="participants-list" aria-label="Liste des participants">
+      <h2>Participants</h2>
+    </aside>
+
+    <section id="audio-zone" aria-label="Zone audio des participants"></section>
+
+    <section id="chat-container" aria-label="Zone de discussion">
+      <div id="chat-messages" aria-live="polite"></div>
+      <div class="chat-input-area">
+        <input id="chat-input" type="text" placeholder="Écrire un message..." aria-label="Message à envoyer" />
+        <button id="send-btn" aria-label="Envoyer message" title="Envoyer message" type="button">
+          <!-- Icône en SVG type avion papier -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+  </section>
+</main>
+
+<script>
+  // Exemple simple pour changer l'affichage quand on clique sur "Rejoindre"
+  document.getElementById('join').addEventListener('click', () => {
+    const name = document.getElementById('name').value.trim();
+    const room = document.getElementById('room').value.trim();
+    if(!name || !room) return alert('Veuillez entrer un nom et un nom de chambre valides.');
+    document.getElementById('join-section').style.display = 'none';
+    document.getElementById('prayer-room').style.display = 'flex';
+  });
+
+  // Exemple d'ajout de message chat local (auto) sur bouton envoyer
+  const chatMessages = document.getElementById('chat-messages');
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('send-btn');
+
+  sendBtn.addEventListener('click', () => {
+    const msg = chatInput.value.trim();
+    if(!msg) return;
+    addChatMessage(msg, true);
+    chatInput.value = '';
+  });
+
+  chatInput.addEventListener('keypress', e => {
+    if(e.key === 'Enter'){
+      sendBtn.click();
+    }
+  });
+
+  function addChatMessage(text, self = false){
+    const div = document.createElement('div');
+    div.classList.add('chat-message');
+    div.classList.add(self ? 'self' : 'other');
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Ici tu connectes ton vrai socket.io et logique plus tard...
+</script>
+
+</body>
+</html>

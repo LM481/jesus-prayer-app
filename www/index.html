@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maison des Revivalistes - Accueil</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    :root {
+      --blue: #2196F3;
+      --light-blue: #E3F2FD;
+      --dark-blue: #0D47A1;
+      --white: #ffffff;
+      --gray: #f0f0f0;
+      --shadow-blue: rgba(33, 150, 243, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--light-blue);
+      color: var(--dark-blue);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1.5rem;
+      text-align: center;
+      background: var(--blue);
+      box-shadow: 0 2px 8px var(--shadow-blue);
+      font-weight: 600;
+      font-size: 1.8rem;
+      letter-spacing: 1.2px;
+      color: var(--white);
+      user-select: none;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem 1.5rem;
+      max-width: 960px;
+      margin: 0 auto 3rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 0 12px var(--shadow-blue);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      cursor: pointer;
+      color: var(--dark-blue);
+      font-weight: 700;
+      font-size: 1.4rem;
+      text-align: center;
+      transition: box-shadow 0.3s ease, transform 0.25s ease, background-color 0.3s ease;
+      position: relative;
+      user-select: none;
+    }
+
+    .card:hover, .card:focus {
+      box-shadow: 0 0 25px var(--blue);
+      background-color: var(--gray);
+      transform: scale(1.06);
+      outline: none;
+    }
+
+    .card span {
+      margin-top: 0.8rem;
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--blue);
+    }
+
+    .card.disabled {
+      color: #999;
+      cursor: not-allowed;
+      background-color: #eee;
+    }
+
+    .card.disabled:hover {
+      box-shadow: none;
+      background-color: #eee;
+      transform: none;
+    }
+
+    .coming-soon {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: var(--blue);
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 12px;
+      user-select: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: #777;
+      font-size: 0.85rem;
+      user-select: none;
+    }
+
+    @media (max-width: 768px) {
+      main {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      main {
+        padding: 1rem;
+        gap: 1rem;
+      }
+
+      .card {
+        padding: 1.5rem 1rem;
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Bienvenue au Ministère de Prière<br/>Maison des Revivalistes
+  </header>
+
+  <main role="main" aria-label="Menu principal">
+
+    <div tabindex="0" role="button" class="card" id="join-call" aria-label="Rejoindre l'appel de prière">
+      📞 Appel de Prière
+      <span>Rejoignez la salle de prière audio</span>
+    </div>
+
+    <div tabindex="0" role="button" class="card" id="cahier-priere" aria-label="Ouvrir le cahier de prière">
+      📒 Cahier de Prière
+      <span>Notez vos prières personnelles</span>
+    </div>
+
+    <div tabindex="0" role="button" class="card disabled" aria-label="Quiz biblique à venir">
+      📚 Quiz Biblique
+    </div>
+
+    <div tabindex="0" role="button" class="card disabled" aria-label="Podcast MDP à venir">
+      🎧 MDP en Podcast
+    </div>
+
+  </main>
+
+  <footer>
+    &copy; 2025 Maison des Revivalistes
+  </footer>
+
+  <script>
+    document.getElementById('join-call').addEventListener('click', () => {
+      window.location.href = 'priere.html';
+    });
+    document.getElementById('join-call').addEventListener('keypress', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        window.location.href = 'priere.html';
+      }
+    });
+
+    document.getElementById('cahier-priere').addEventListener('click', () => {
+      window.location.href = 'cahier.html';
+    });
+    document.getElementById('cahier-priere').addEventListener('keypress', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        window.location.href = 'cahier.html';
+      }
+    });
+
+    const disabledCards = document.querySelectorAll('.card.disabled');
+    disabledCards.forEach(card => {
+      card.addEventListener('click', () => alert('Fonctionnalité à venir bientôt !'));
+      card.addEventListener('keypress', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          alert('Fonctionnalité à venir bientôt !');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
